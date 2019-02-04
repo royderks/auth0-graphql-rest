@@ -3,40 +3,47 @@ const { ApolloServer, gql } = require("apollo-server-express");
 const fetch = require("node-fetch");
 
 const typeDefs = require("./typeDefs.js");
-
-const baseURL = `http://demo9458524.mockable.io/`;
+const ProductsAPI = require("./products.js");
 
 const resolvers = {
   Query: {
-    products: (_, args) => {
-      return fetch(`${baseURL}products`).then(res => res.json());
+    products: (_, args, context) => {
+      const { dataSources } = context;
+      return dataSources.productsAPI.getProducts();
     },
-    product: (parent, args) => {
+    product: (parent, args, context) => {
+      const { dataSources } = context;
       const { id } = args;
-      return fetch(`${baseURL}products/${id}`).then(res => res.json());
+      return dataSources.productsAPI.getProduct(id);
     }
   },
   Mutation: {
-    addOffer: (parent, args) => {
+    addOffer: (parent, args, context) => {
+      const { dataSources } = context;
       const { productId, reseller, price } = args;
-      return fetch(`${baseURL}products/${id}/offers`).then(res => res.json());
+      return dataSources.productsAPI.addProductOffer(productId, reseller, price);
     }
   },
   Product: {
-    reviews: (parent) => {
+    reviews: (parent, args, context) => {
+      const { dataSources } = context;
       const { id } = parent;
-      return fetch(`${baseURL}products/${id}/reviews`).then(res => res.json());
+      return dataSources.productsAPI.getProductReviews(id);
     },
-    offers: (parent) => {
+    offers: (parent, args, context) => {
+      const { dataSources } = context;
       const { id } = parent;
-      return fetch(`${baseURL}products/${id}/offers`).then(res => res.json());
+      return dataSources.productsAPI.getProductOffers(id);
     }
   }
 };
 
 const server = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers,
+  dataSources: () => ({
+    productsAPI: new ProductsAPI
+  })
 });
 
 const app = express();
