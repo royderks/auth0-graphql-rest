@@ -1,4 +1,4 @@
-const { gql } = require("apollo-server-express");
+const { gql } = require('apollo-server-express')
 
 const typeDefs = gql`
   type Product {
@@ -25,6 +25,6 @@ const typeDefs = gql`
   type Mutation {
     addOffer(productId: Int!, reseller: String, price: Float): Offer
   }
-`;
+`
 
-module.exports = typeDefs;
+module.exports = typeDefs
