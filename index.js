@@ -21,32 +21,23 @@ const jwtCheck = jwt({
 
 const resolvers = {
   Query: {
-    products: (_, args, context) => {
-      const { dataSources } = context
+    products: (_, args, { dataSources }) => {
       return dataSources.productsAPI.getProducts()
     },
-    product: (parent, args, context) => {
-      const { dataSources } = context
-      const { id } = args
+    product: ({ id }, args, { dataSources }) => {
       return dataSources.productsAPI.getProduct(id)
     },
   },
   Mutation: {
-    addOffer: (parent, args, context) => {
-      const { dataSources } = context
-      const { productId, reseller, price } = args
+    addOffer: (_, { productId, reseller, price }, { dataSources }) => {
       return dataSources.productsAPI.addProductOffer(productId, reseller, price)
     },
   },
   Product: {
-    reviews: (parent, args, context) => {
-      const { dataSources } = context
-      const { id } = parent
+    reviews: ({ id }, args, { dataSources }) => {
       return dataSources.productsAPI.getProductReviews(id)
     },
-    offers: (parent, args, context) => {
-      const { dataSources } = context
-      const { id } = parent
+    offers: ({ id }, args, { dataSources }) => {
       return dataSources.productsAPI.getProductOffers(id)
     },
   },
